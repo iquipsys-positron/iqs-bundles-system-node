@@ -1,0 +1,63 @@
+{
+  "name": "iqs-bundles-system-node",
+  "version": "1.0.0",
+  "author": "Conceptual Vision Consulting LLC",
+  "description": "Microservice for deploying components iqs system microservices",
+  "contributors": [
+    "Sergey Seroukhov <seroukhov@gmail.com>"
+  ],
+  "main": "./obj/src/index.js",
+  "typings": "./obj/src/index.d.ts",
+  "keywords": [
+    "iqs.services",
+    "microservice"
+  ],
+  "noAnalyze": true,
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:iquipsys-positron/iqs-bundles-system-node.git"
+  },
+  "license": "SEE LICENSE IN LICENCE.md",
+  "engines": {
+    "node": ">=0.6.14"
+  },
+  "private": false,
+  "scripts": {
+    "start": "node app",
+    "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
+    "benchmark": "matcha -R clean -I tdd ./benchmark/run.js"
+  },
+  "dependencies": {
+    "pip-services3-commons-node": "^3.0.0",
+    "pip-services3-components-node": "^3.0.0",
+    "pip-services3-container-node": "^3.0.0",
+    "pip-services3-data-node": "^3.0.0",
+    "pip-services3-aws-node": "^3.0.0",
+    "pip-services3-rpc-node": "^3.0.0",
+    "pip-services3-mongodb-node": "^3.0.0",
+    "pip-services3-facade-node": "^3.0.0",
+    "pip-clients-accounts-node": "^1.0.0",
+    "pip-clients-organizations-node": "^1.0.0",
+    "pip-clients-invitations-node": "^1.0.0",
+    "pip-clients-roles-node": "^1.0.0",
+    "pip-clients-clusters-node": "^1.0.0",
+    "iqs-clients-agreements-node": "^1.0.0",
+    "pip-services-invitations-node": "^1.0.0",
+    "pip-services-roles-node": "^1.0.0",
+    "pip-services-clusters-node": "^1.0.0",
+    "iqs-services-agreements-node": "^1.0.0",
+    "iqs-services-dataprofiles-node": "^1.0.0",
+    "iqs-services-deviceprofiles-node": "^1.0.0",
+    "iqs-services-cloudwatch-node": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "*",
+    "@types/lodash": "^4.0.0",
+    "@types/async": "^2.0.0",
+    "@types/mocha": "*",
+    "@types/chai": "*",
+    "mocha": "*",
+    "chai": "*",
+    "restify": "4.3.4"
+  }
+}

@@ -1,0 +1,102 @@
+version: '3.3'
+
+services:
+
+  iqs-bundles-system-node:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    links:
+      - mongo
+      - iqs-bundles-configuration-node
+      - iqs-bundles-users-node
+    environment:
+      - ENV_NAME=debug
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_ID=
+      - AWS_ACCESS_KEY=
+      - MONGO_SERVICE_URI=mongo:27017/app
+      - DEMO_SITE_ID=123
+      - DEMO_SITE_RU_ID=321
+      - IQS_GROUPS_CONFIGURATION_SERVICE_HOST=iqs-bundles-configuration-node
+      - IQS_GROUPS_CONFIGURATION_SERVICE_PORT=8012
+      - IQS_GROUPS_USERS_SERVICE_HOST=iqs-bundles-users-node
+      - IQS_GROUPS_USERS_SERVICE_PORT=8004
+    ports:
+      - "8024:8080"
+
+  iqs-bundles-configuration-node:
+    image: registry.gitlab.com/iqs-bundles/iqs-bundles-configuration-node:1.1.0-release
+    links:
+      - mongo
+    environment:
+      - ENV_NAME=debug
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_ID=
+      - AWS_ACCESS_KEY=
+      - MONGO_SERVICE_URI=mongo:27017/app
+    ports:
+      - "8012:8080"
+
+  iqs-bundles-users-node:
+    image: registry.gitlab.com/iqs-bundles/iqs-bundles-users-node:1.1.0-release
+    links:
+      - mongo
+      - iqs-bundles-infrastructure-node
+      - iqs-bundles-content-node
+    environment:
+      - ENV_NAME=debug
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_ID=
+      - AWS_ACCESS_KEY=
+      - MONGO_SERVICE_URI=mongo:27017/app
+      - MAGIC_CODE=magic
+      - IQS_GROUPS_INFRASTRUCTURE_SERVICE_HOST=iqs-bundles-infrastructure-node
+      - IQS_GROUPS_INFRASTRUCTURE_SERVICE_PORT=8002
+      - IQS_GROUPS_CONTENT_SERVICE_HOST=iqs-bundles-content-node
+      - IQS_GROUPS_CONTENT_SERVICE_PORT=8006
+    ports:
+      - "8004:8080"
+
+  iqs-bundles-infrastructure-node:
+    image: registry.gitlab.com/iqs-bundles/iqs-bundles-infrastructure-node:1.1.0-release
+    links:
+      - mongo
+    environment:
+      - ENV_NAME=debug
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_ID=
+      - AWS_ACCESS_KEY=
+      - MONGO_SERVICE_URI=mongo:27017/app
+      - AWS_BLOBS_ARN=arn:aws:s3:us-east-1::iqs-positron-blobs-stage
+      - EMAIL_SERVICE=Gmail
+      - EMAIL_SERVICE_HOST=host233.hostmonster.com
+      - EMAIL_SERVICE_PORT=465
+      - EMAIL_SSL=true
+      - EMAIL_USER=info@iquipsys.com
+      - EMAIL_PASS=iQuipsys#01
+      - EMAIL_FROM=positron@iquipsys.com
+      - CLIENT_NAME="iQuipsys Positron"
+      - CLIENT_URL=http://www.positron.stage.iquipsys.net
+      - SERVER_URL=api.positron.stage.iquipsys.net
+      - EMAIL_SIGNATURE=Yours iQuipsys support
+      - SMS_FROM=iquipsys
+      - SMS_SIGNATURE=Yours iQuipsys support
+    ports:
+      - "8002:8080"
+
+  iqs-bundles-content-node:
+    image: registry.gitlab.com/iqs-bundles/iqs-bundles-content-node:1.1.0-release
+    links:
+      - mongo
+    environment:
+      - ENV_NAME=debug
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_ID=
+      - AWS_ACCESS_KEY=
+      - MONGO_SERVICE_URI=mongo:27017/app
+    ports:
+      - "8006:8080"
+
+  mongo:
+      image: mongo:latest

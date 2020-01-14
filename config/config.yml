@@ -1,0 +1,147 @@
+---
+# Container descriptor
+- descriptor: "pip-services:context-info:default:default:1.0"
+  name: "iqs-bundles-system-node"
+  description: "Microservice for deploying iqs system microservices"
+
+# Console logger
+- descriptor: "pip-services:logger:console:default:1.0"
+  level: "trace"
+
+# Performance counters that posts values to log
+- descriptor: "pip-services:counters:log:default:1.0"
+  level: "trace"
+
+# AWS logging component
+- descriptor: "pip-services:logger:cloudwatch:default:1.0"
+  level: "info"
+  group: "{{ENV_NAME}}"
+  connection:
+    region: "{{{AWS_REGION}}}"
+  credential:
+    access_id: "{{{AWS_ACCESS_ID}}}"
+    access_key: "{{{AWS_ACCESS_KEY}}}"
+
+# AWS metrics component
+- descriptor: "pip-services:counters:cloudwatch:default:1.0"
+  level: "info"
+  connection:
+    region: "{{{AWS_REGION}}}"
+  credential:
+    access_id: "{{{AWS_ACCESS_ID}}}"
+    access_key: "{{{AWS_ACCESS_KEY}}}"
+
+# Common HTTP endpoint
+- descriptor: "pip-services:endpoint:http:default:1.0"
+  connection:
+    protocol: "http"
+    host: "0.0.0.0"
+    port: 8080
+
+# Heartbeat service
+- descriptor: "pip-services:heartbeat-service:http:default:1.0"
+
+# Status service
+- descriptor: "pip-services:status-service:http:default:1.0"
+
+# Discovery service
+- descriptor: "pip-services:discovery:memory:default:*"
+  mongodb: "uri={{{MONGO_SERVICE_URI}}};host={{{MONGO_SERVICE_HOST}}};port={{{MONGO_SERVICE_PORT}}};database={{{MONGO_DB}}}"
+
+# Credential store
+- descriptor: "pip-services:credential-store:memory:default:*"
+  mongodb: "username={{{MONGO_USER}}};password={{{MONGO_PASS}}}"
+
+############## Pip.Services References ##############
+
+# Pip.Services Roles components
+- descriptor: "pip-services-roles:client:http:default:*"
+  connection:
+    protocol: "http"
+    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
+    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
+  options:
+    connect_timeout: 10000
+    timeout: 10000
+    retries: 3
+
+# Accounts component
+- descriptor: "pip-services-accounts:client:http:default:*"
+  connection:
+    protocol: "http"
+    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
+    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
+  options:
+    connect_timeout: 10000
+    timeout: 10000
+    retries: 3
+
+# Message distribution component
+- descriptor: "pip-services-msgdistribution:client:http:default:*"
+  connection:
+    protocol: "http"
+    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
+    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
+  options:
+    connect_timeout: 10000
+    timeout: 10000
+    retries: 3
+
+############## iQs components ##############
+
+# Organizations components
+- descriptor: "pip-services-organizations:client:http:default:*"
+  connection:
+    protocol: "http"
+    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
+    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
+  options:
+    connect_timeout: 10000
+    timeout: 10000
+    retries: 3
+
+# Clusters components
+- descriptor: "pip-services-clusters:persistence:mongodb:default:*"
+  connection:
+    discovery_key: mongodb
+- descriptor: "pip-services-clusters:controller:default:default:*"
+- descriptor: "pip-services-clusters:client:direct:default:*"
+- descriptor: "pip-services-clusters:service:http:default:*"
+
+# Agreements components
+- descriptor: "iqs-services-agreements:persistence:mongodb:default:*"
+  connection:
+    discovery_key: mongodb
+- descriptor: "iqs-services-agreements:controller:default:default:*"
+- descriptor: "iqs-services-agreements:client:direct:default:*"
+- descriptor: "iqs-services-agreements:service:http:default:*"
+
+# Invitations components
+- descriptor: "pip-services-invitations:persistence:mongodb:default:*"
+  connection:
+    discovery_key: mongodb
+- descriptor: "pip-services-invitations:controller:default:default:*"
+  message_templates:
+    invitation:
+      template: invitation
+    access_request:
+      template: access_request
+    access_approved:
+      template: access_approved
+    access_denied:
+      template: access_denied
+    organization_invitation:
+      template: organization_invitation
+- descriptor: "pip-services-invitations:client:direct:default:*"
+- descriptor: "pip-services-invitations:service:http:default:*"
+
+# Roles components
+- descriptor: "pip-services-roles:controller:default:default:*"
+  options:
+    demo_organization_id: "{{{DEMO_SITE_ID}}}"
+    demo_organization_ru_id : "{{{DEMO_SITE_RU_ID}}}"
+  message_templates:
+    organization_grant_access:
+      template: organization_grant_access
+- descriptor: "pip-services-roles:client:direct:default:*"
+- descriptor: "pip-services-roles:service:http:default:*"
